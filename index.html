@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kavisha Parikh - Portfolio</title>
+    <!-- Tailwind via CDN for simplicity in this generated kit -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              mono: ['Fira Code', 'monospace'],
+            },
+            colors: {
+              vscode: {
+                bg: '#1e1e1e',
+                sidebar: '#252526',
+                activityBar: '#333333',
+                statusBar: '#007acc',
+                tabActive: '#1e1e1e',
+                tabInactive: '#2d2d2d',
+                text: '#d4d4d4',
+                lineNum: '#858585',
+                accent: '#007acc',
+                hover: '#2a2d2e',
+                selection: '#264f78',
+                terminal: '#1e1e1e',
+                terminalBorder: '#2b2b2b'
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-[#1e1e1e] text-[#d4d4d4] m-0 overflow-hidden">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

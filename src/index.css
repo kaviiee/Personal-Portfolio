@@ -1,0 +1,46 @@
+
+body {
+  margin: 0;
+  background-color: #1e1e1e;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+::-webkit-scrollbar-thumb {
+  background: #424242;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4f4f4f;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0px rgba(0, 255, 255, 0.4); }
+  50% { box-shadow: 0 0 10px rgba(0, 255, 255, 0.8); }
+  100% { box-shadow: 0 0 0px rgba(0, 255, 255, 0.4); }
+}
+
+.ai-badge {
+  animation: pulse 2s infinite;
+  display: inline-block;
+  padding: 0 4px;
+  border-radius: 4px;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0px rgba(0, 255, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+  }
+}
+
+.ai-terminal {
+  border: 2px solid rgba(0, 255, 255, 0.5);
+  border-radius: 8px;
+  animation: pulseGlow 2s infinite;
+}
