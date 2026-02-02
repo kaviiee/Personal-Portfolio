@@ -31,6 +31,7 @@ import {
   Download
 } from "lucide-react";
 import { GoogleGenAI } from "@google/genai";
+import { OpenRouter } from "@openrouter/sdk";
 import JSZip from "jszip";
 
 
@@ -625,6 +626,7 @@ const Terminal = () => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const chatRef = useRef<any>(null); // Store AI chat session
+  const openRouterRef = useRef<OpenRouter | null>(null);
   const [isMinimized, setIsMinimized] = useState(false);
   const toggleMinimize = () => setIsMinimized(prev => !prev);
   
@@ -647,46 +649,217 @@ const Terminal = () => {
         }
       });
     }
+    
+    if (import.meta.env.VITE_OPENROUTER_API_KEY) {
+    openRouterRef.current = new OpenRouter({
+      apiKey: import.meta.env.VITE_OPENROUTER_API_KEY,
+      // defaultHeaders: {
+      //   "HTTP-Referer": window.location.origin,
+      //   "X-Title": "Kavisha Portfolio",
+      // },
+    });
+    console.log("OpenRouter initialized");
+  }
+
+
   }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [history, isTyping]);
 
+  // const handleKeyDown = async (e: React.KeyboardEvent) => {
+  //   if (e.key === 'Enter' && input.trim()) {
+  //     const userMsg = input.trim();
+  //     setInput('');
+  //     setHistory(prev => [...prev, { role: 'user', content: userMsg }]);
+  //     setIsTyping(true);
+
+  //     try {
+  //       if (!chatRef.current) {
+  //          // Fallback if key missing or init failed
+  //          setTimeout(() => {
+  //            setHistory(prev => [...prev, { role: 'system', content: 'Error: API_KEY not configured or connection failed.' }]);
+  //            setIsTyping(false);
+  //          }, 500);
+  //          return;
+  //       }
+
+  //       // Send message to Gemini
+  //       const result = await chatRef.current.sendMessage({ message: userMsg });
+  //       const responseText = result.text;
+
+  //       // Simulate typing effect slightly
+  //       setTimeout(() => {
+  //           setHistory(prev => [...prev, { role: 'system', content: responseText }]);
+  //           setIsTyping(false);
+  //       }, 300);
+
+  //     } catch (error) {
+  //       console.error(error);
+  //       setHistory(prev => [...prev, { role: 'system', content: 'Error: Connection timed out or API error.' }]);
+  //       setIsTyping(false);
+  //     }
+  //   }
+  // };
+
+
+//   const handleKeyDown = async (e: React.KeyboardEvent) => {
+//   if (e.key !== "Enter" || !input.trim()) return;
+
+//   const userMsg = input.trim();
+//   setInput("");
+//   setHistory((prev) => [...prev, { role: "user", content: userMsg }]);
+//   setIsTyping(true);
+
+//   let responseText = "";
+
+//   try {
+//     // --- Try Gemini first ---
+//     if (chatRef.current) {
+//       try {
+//         const result = await chatRef.current.sendMessage({ message: userMsg });
+//         responseText = result.text;
+//       } catch (geminiError: any) {
+//         console.warn("Gemini failed:", geminiError.message);
+//       }
+//     }
+
+//     // --- Fallback to OpenRouter ---
+//     if (!responseText && import.meta.env.VITE_OPENROUTER_API_KEY) {
+//       let completion: any;
+//       try {
+//         // const completion = await openRouter.chat.send({
+//         //   model: "openai/gpt-5.2",
+//         //   messages: [
+//         //     { role: "system", content: GENERATED_CONTEXT },
+//         //     { role: "user", content: userMsg },
+//         //   ],
+//         //   stream: false,
+//         // });
+//         if (openRouterRef.current) {
+// //         const completion = await openRouterRef.current.chat.send({
+// //   model: "openai/gpt-5.2",
+// //   messages: [{ role: "user", content: userMsg }],
+// //   stream: false,
+// //   headers: {
+// //     "HTTP-Referer": window.location.origin,
+// //     "X-Title": "Kavisha Portfolio",
+// //   },
+// // });
+//           const completion = await openRouterRef.current.chat.send(
+//     {
+//       model: "openai/gpt-5.2",
+//       messages: [{ role: "user", content: userMsg }],
+//       stream: false, // non-streaming mode
+//     },
+//     {
+//       headers: {
+//         "HTTP-Referer": window.location.origin,
+//         "X-Title": "Kavisha Portfolio",
+//       },
+//     }
+//   );
+
+//   console.log(completion.choices[0].message.content);
+// }
+
+//         responseText = completion.choices?.[0]?.message?.content || "";
+//       } catch (openRouterError: any) {
+//         console.error("OpenRouter failed:", openRouterError.message);
+//       }
+//     }
+
+//     if (!responseText) {
+//       responseText = "Error: Both Gemini and OpenRouter are unavailable.";
+//     }
+
+//     setHistory((prev) => [...prev, { role: "system", content: responseText }]);
+//     setIsTyping(false);
+
+//   } catch (error) {
+//     console.error("Unexpected error:", error);
+//     setHistory((prev) => [...prev, { role: "system", content: "Unexpected error occurred." }]);
+//     setIsTyping(false);
+//   }
+// };
+
+
   const handleKeyDown = async (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && input.trim()) {
-      const userMsg = input.trim();
-      setInput('');
-      setHistory(prev => [...prev, { role: 'user', content: userMsg }]);
-      setIsTyping(true);
+  if (e.key !== 'Enter' || !input.trim()) return;
 
-      try {
-        if (!chatRef.current) {
-           // Fallback if key missing or init failed
-           setTimeout(() => {
-             setHistory(prev => [...prev, { role: 'system', content: 'Error: API_KEY not configured or connection failed.' }]);
-             setIsTyping(false);
-           }, 500);
-           return;
-        }
+  const userMsg = input.trim();
+  setInput('');
+  setHistory(prev => [...prev, { role: 'user', content: userMsg }]);
+  setIsTyping(true);
 
-        // Send message to Gemini
-        const result = await chatRef.current.sendMessage({ message: userMsg });
-        const responseText = result.text;
+  let responseText = "";
 
-        // Simulate typing effect slightly
-        setTimeout(() => {
-            setHistory(prev => [...prev, { role: 'system', content: responseText }]);
-            setIsTyping(false);
-        }, 300);
-
-      } catch (error) {
-        console.error(error);
-        setHistory(prev => [...prev, { role: 'system', content: 'Error: Connection timed out or API error.' }]);
-        setIsTyping(false);
-      }
+  // --- Gemini try ---
+  if (import.meta.env.VITE_API_KEY) {
+    if (!chatRef.current) {
+      // re-initialize if somehow missing
+      const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
+      chatRef.current = ai.chats.create({
+        model: 'gemini-3-flash-preview',
+        config: { systemInstruction: GENERATED_CONTEXT },
+      });
     }
-  };
+
+    try {
+      const result = await chatRef.current.sendMessage({ message: userMsg });
+      responseText = result.text;
+    } catch (geminiError: any) {
+      console.warn("Gemini failed:", geminiError.message);
+    }
+  }
+
+  // --- OpenRouter fallback ---
+  if (!responseText && import.meta.env.VITE_OPENROUTER_API_KEY) {
+    if (!openRouterRef.current) {
+      openRouterRef.current = new OpenRouter({ apiKey: import.meta.env.VITE_OPENROUTER_API_KEY });
+      console.log("OpenRouter initialized");
+    }
+
+    try {
+      const completion = await openRouterRef.current.chat.send(
+        {
+          model: "openai/gpt-5.2",
+          messages: [
+            { role: "system", content: GENERATED_CONTEXT },
+            { role: "user", content: userMsg },
+          ],
+          stream: false,
+        }
+      );
+
+      //  responseText = completion?.choices?.[0]?.message?.content || "";
+      const content = completion?.choices?.[0]?.message?.content;
+
+if (typeof content === "string") {
+  responseText = content;
+} else if (Array.isArray(content)) {
+  responseText = content
+    .map(item => {
+      if ("text" in item) return item.text;
+      return "";
+    })
+    .join(" ");
+} else {
+  responseText = "";
+}
+
+    } catch (openRouterError: any) {
+      console.error("OpenRouter failed:", openRouterError.message);
+    }
+  }
+
+  if (!responseText) responseText = "Error: Both Gemini and OpenRouter are unavailable.";
+
+  setHistory(prev => [...prev, { role: 'system', content: responseText }]);
+  setIsTyping(false);
+};
+
 
   const handleTerminalClick = () => {
     inputRef.current?.focus();
