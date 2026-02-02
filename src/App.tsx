@@ -635,7 +635,7 @@ const Terminal = () => {
 }, [isMinimized]);
 
   useEffect(() => {
-    console.log("VITE_API_KEY:", import.meta.env.VITE_API_KEY); // <-- Add this
+    // console.log("VITE_API_KEY:", import.meta.env.VITE_API_KEY); // <-- Add this
 
     // Initialize Gemini Chat Session
     if (import.meta.env.VITE_API_KEY) {
