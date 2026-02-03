@@ -275,7 +275,7 @@ const HomeView = ({ onNavigate }: { onNavigate: (file: string) => void }) => (
     <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
       {USER_CONFIG.name}
     </h1>
-    <h2 className="text-xl md:text-2xl text-gray-400 mb-8 font-light flex items-center justify-center gap-2">
+    <h2 className="text-xl md:text-2xl text-gray-400 mb-4 font-light flex items-center justify-center gap-2">
       <Briefcase size={20} className="text-vscode-accent" />
       {USER_CONFIG.title}
     </h2>
@@ -869,7 +869,7 @@ if (typeof content === "string") {
     
     <div 
       className={`flex flex-col bg-vscode-terminal text-vscode-text font-mono text-sm ai-terminal transition-all duration-300 ${
-        isMinimized ? 'h-[32px]' : 'h-60'
+        isMinimized ? 'h-[32px]' : 'h-56'
       }`}
       onClick={handleTerminalClick}
     >
